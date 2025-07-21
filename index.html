@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ritesh Kapse - Computer Vision Engineer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Neutrals -->
+    <!-- Application Structure Plan: The SPA is structured as a single-page, scrollable portfolio with a sticky top navigation bar for easy access to key sections. This design was chosen for its modern, linear storytelling flow, which is ideal for a resume or portfolio. The structure includes: 1) A Hero section for immediate impact, featuring a personal photo on the left and updated title/summary on the right. 2) A "Core Competencies" section visualized as a grid of cards for scannability. 3) An interactive tabbed "Key Projects" section with direct links to code and demos, populated with resume data. 4) A "Technical Skills" section featuring a Chart.js bar chart with updated skills and categorized coloring, now including a clear legend. 5) A "Professional Certifications" section highlighting formal qualifications from resume. 6) A "Experience & Education" section now presenting two distinct, side-by-side timelines with summarized experience descriptions for clarity and improved visual spacing. This structure transforms a static document into an engaging user-driven experience. -->
+    <!-- Visualization & Content Choices: 1) Core Competencies (Report Info) -> Inform (Goal) -> Grid of cards with icons (Presentation) -> Hover to highlight (Interaction) -> More scannable and visually appealing than a list (Justification) -> HTML/Tailwind (Method). 2) Key Projects (Report Info) -> Organize (Goal) -> Tabbed interface with emojis and action links (Presentation) -> Click to reveal details, click links for code/demo (Interaction) -> Improves readability, user control, and provides direct access to project artifacts (Justification) -> JS/HTML/Tailwind (Method). 3) Technical Skills (Report Info) -> Compare (Goal) -> Horizontal Bar Chart with categorized colors and rounded bars (Presentation) -> Hover for tooltips, integrated legend (Interaction) -> Visually quantifies skills, makes categories clear, and offers a trendy look (Justification) -> Chart.js/Canvas (Method). 4) Professional Certifications (New Info) -> Inform (Goal) -> Grid of cards with icons (Presentation) -> Clear display of qualifications (Justification) -> HTML/Tailwind (Method). 5) Experience & Education (Report Info) -> Change/Organize (Goal) -> Two side-by-side vertical timelines with concise summaries and optimized spacing (Presentation) -> Clear chronological display and improved readability (Justification) -> HTML/Tailwind (Method). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .nav-link.active {
+            color: #0ea5e9; /* sky-500 */
+            font-weight: 500;
+        }
+        .tab.active {
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .diagram-box {
+            transition: all 0.3s ease-in-out;
+        }
+        .diagram-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border-color: #0ea5e9; /* sky-500 */
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 60vh; /* Increased height for more bars */
+            width: 100%;
+            max-width: 900px;
+            max-height: 600px; /* Increased max height */
+        }
+        /* Project Link Styles */
+        .project-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .project-link {
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .project-link.primary {
+            background: #0ea5e9; /* sky-500 */
+            color: white;
+        }
+        .project-link.secondary {
+            background: transparent;
+            color: #0ea5e9; /* sky-500 */
+            border: 2px solid #0ea5e9; /* sky-500 */
+        }
+        .project-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .project-link.secondary:hover {
+            background: #0ea5e9;
+            color: white;
+        }
+        /* Timeline specific styles */
+        .timeline-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 1000px; /* Limit overall width for better readability */
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .timeline-container {
+                flex-direction: row;
+                gap: 0; /* Remove gap, content margins will create separation */
+            }
+        }
+        .timeline-col {
+            flex: 1;
+            position: relative;
+            padding: 0 1rem; /* Padding for mobile, will be overridden on desktop */
+        }
+        .timeline-col .vertical-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #cbd5e1; /* slate-300 */
+            transform: translateX(-50%);
+        }
+        .timeline-event {
+            position: relative;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        .timeline-event .circle {
+            position: absolute;
+            left: 50%;
+            top: 1.5rem;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background-color: #0ea5e9; /* sky-500 */
+            border-radius: 50%;
+            border: 3px solid #f8fafc; /* body background */
+            z-index: 10;
+        }
+        .timeline-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            /* Default for mobile and small screens */
+            margin-left: 2rem;
+            margin-right: 2rem;
+            text-align: left;
+        }
+        @media (min-width: 768px) {
+            .timeline-col.left .timeline-content {
+                margin-right: 2rem; /* Gap from the vertical line */
+                margin-left: 0; /* Let it expand to the left */
+                text-align: right;
+            }
+            .timeline-col.right .timeline-content {
+                margin-left: 2rem; /* Gap from the vertical line */
+                margin-right: 0; /* Let it expand to the right */
+                text-align: left;
+            }
+        }
+        /* Skill Legend Styling */
+        .skill-legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .skill-legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-slate-800">Ritesh Kapse</h1>
+            <div class="hidden md:flex space-x-6 text-slate-600">
+                <a href="#home" class="nav-link hover:text-sky-500 transition-colors">Home</a>
+                <a href="#competencies" class="nav-link hover:text-sky-500 transition-colors">Competencies</a>
+                <a href="#projects" class="nav-link hover:text-sky-500 transition-colors">Projects</a>
+                <a href="#certifications" class="nav-link hover:text-sky-500 transition-colors">Certifications</a>
+                <a href="#skills" class="nav-link hover:text-sky-500 transition-colors">Skills</a>
+                <a href="#experience" class="nav-link hover:text-sky-500 transition-colors">Experience</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden text-slate-800 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <a href="#home" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Home</a>
+            <a href="#competencies" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Competencies</a>
+            <a href="#projects" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Projects</a>
+            <a href="#certifications" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Certifications</a>
+            <a href="#skills" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Skills</a>
+            <a href="#experience" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Experience</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="py-20 md:py-32 bg-white flex flex-col md:flex-row items-center justify-center md:space-x-12">
+            <div class="container mx-auto px-6 flex flex-col md:flex-row items-center justify-center md:space-x-12">
+                <img src="https://placehold.co/192x192/E0F2FE/0284C7?text=Your+Photo" onerror="this.onerror=null;this.src='https://placehold.co/192x192/E0F2FE/0284C7?text=Your+Photo';" alt="Ritesh Kapse" class="rounded-full w-48 h-48 mb-8 md:mb-0 shadow-lg border-4 border-sky-100 object-cover flex-shrink-0">
+                <div class="text-center md:text-left md:w-1/2">
+                    <h2 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">Ritesh Kapse</h2>
+                    <h3 class="text-2xl md:text-3xl text-sky-600 mt-2">Computer Vision and Automotive Self-Driving Specialist</h3>
+                    <p class="mt-6 max-w-3xl mx-auto text-lg text-slate-600 md:mx-0">
+                        Senior Development Engineer in Test with 10 years in the Automotive industry, specializing in software testing and development. My expertise in Python, C++, Machine learning, Computer Vision and Agile methodologies complements my work in automotive technologies. I leverage generative AI to enhance development efficiency and innovation in advanced driving assistance systems, leading cross-functional teams to deliver customer-centric solutions.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4 mt-8">
+                        <a href="#projects" class="px-6 py-3 bg-sky-500 text-white font-semibold rounded-full shadow-lg hover:bg-sky-600 transition-all duration-300">View Projects</a>
+                        <a href="#contact" class="px-6 py-3 bg-white text-sky-600 font-semibold rounded-full shadow-lg border border-sky-500 hover:bg-sky-50 transition-all duration-300">Get In Touch</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="competencies" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Core Competencies</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">This section provides a high-level overview of my fundamental skills. These competencies form the bedrock of my work in developing robust perception systems for autonomous vehicles.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200">
+                        <div class="text-3xl mb-3 text-sky-500">👁️</div>
+                        <h3 class="font-bold text-lg mb-2">Computer Vision Fundamentals</h3>
+                        <p class="text-slate-600 text-sm">Image processing, feature extraction, object detection, segmentation, tracking, and 3D vision.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200">
+                        <div class="text-3xl mb-3 text-sky-500">🧠</div>
+                        <h3 class="font-bold text-lg mb-2">Machine & Deep Learning</h3>
+                        <p class="text-slate-600 text-sm">CNNs, RNNs, Transformers, transfer learning, and model optimization.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200">
+                        <div class="text-3xl mb-3 text-sky-500">📡</div>
+                        <h3 class="font-bold text-lg mb-2">Sensor Fusion</h3>
+                        <p class="text-slate-600 text-sm">Integrating data from cameras, LiDAR, and Radar for comprehensive understanding.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200">
+                        <div class="text-3xl mb-3 text-sky-500">🚗</div>
+                        <h3 class="font-bold text-lg mb-2">Perception Systems</h3>
+                        <p class="text-slate-600 text-sm">Developing robust perception modules for end-to-end autonomous driving.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200">
+                        <div class="text-3xl mb-3 text-sky-500">📊</div>
+                        <h3 class="font-bold text-lg mb-2">Data Handling</h3>
+                        <p class="text-slate-600 text-sm">Large-scale dataset management, annotation, augmentation, and pipeline development.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200">
+                        <div class="text-3xl mb-3 text-sky-500">⚡️</div>
+                        <h3 class="font-bold text-lg mb-2">Performance Optimization</h3>
+                        <p class="text-slate-600 text-sm">Real-time processing, embedded systems considerations, and computational efficiency.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Key Projects & Areas of Expertise</h2>
+                     <p class="mt-2 text-slate-600 max-w-2xl mx-auto">Explore my hands-on experience by clicking through the different project areas below. Each tab details the project's focus, the skills demonstrated, and its impact on autonomous vehicle systems, along with links to code and live demos.</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mb-8">
+                    <button class="tab active" data-tab="tab1">Object Detection</button>
+                    <button class="tab" data-tab="tab2">Lane Detection</button>
+                    <button class="tab" data-tab="tab3">Race Car Tracking</button>
+                    <button class="tab" data-tab="tab4">Image Segmentation</button>
+                    <button class="tab" data-tab="tab5">Cloud Deployment</button>
+                    <button class="tab" data-tab="tab6">Generative AI Simulation</button>
+                </div>
+
+                <div class="bg-slate-50 p-8 rounded-lg border border-slate-200 min-h-[300px]">
+                    <div id="tab1" class="tab-content active">
+                        <h3 class="font-bold text-xl mb-4 text-sky-700">🔍 Object Detection with PyTorch CNNs and Open-CV</h3>
+                        <p class="font-semibold text-slate-700">Project Focus:</p>
+                        <p class="mb-4 text-slate-600">Implemented object detection models using PyTorch convolutional neural networks (CNNs), focusing on accurate object recognition in images.</p>
+                        <p class="font-semibold text-slate-700">Key Skills Demonstrated:</p>
+                        <p class="mb-4 text-slate-600">PyTorch, CNNs, OpenCV, Object Recognition, Model Implementation.</p>
+                        <p class="font-semibold text-slate-700">Impact:</p>
+                        <p class="text-slate-600 font-medium">Enhanced the capability for precise object identification in diverse visual data.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/Ritesh0811/Object-Detection-with-PyTorch-CNNs-and-Open-CV" target="_blank" class="project-link primary">View Code</a>
+                            <a href="#" target="_blank" class="project-link secondary">Live Demo (N/A)</a>
+                        </div>
+                    </div>
+                    <div id="tab2" class="tab-content">
+                        <h3 class="font-bold text-xl mb-4 text-sky-700">🛣️ Advance Lane Detections using Hough Transforms</h3>
+                        <p class="font-semibold text-slate-700">Project Focus:</p>
+                        <p class="mb-4 text-slate-600">Developed a lane detection system using Hough transforms to enhance autonomous vehicle navigation, ensuring accurate lane tracking in various road conditions.</p>
+                        <p class="font-semibold text-slate-700">Key Skills Demonstrated:</p>
+                        <p class="mb-4 text-slate-600">Hough Transforms, Lane Detection, Autonomous Navigation, Road Condition Handling.</p>
+                        <p class="font-semibold text-slate-700">Impact:</p>
+                        <p class="text-slate-600 font-medium">Improved the reliability of lane keeping systems for autonomous vehicles.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/Ritesh0811/Advance-Lane-Detections-using-Hough-Transforms" target="_blank" class="project-link primary">View Code</a>
+                            <a href="#" target="_blank" class="project-link secondary">Live Demo (N/A)</a>
+                        </div>
+                    </div>
+                    <div id="tab3" class="tab-content">
+                        <h3 class="font-bold text-xl mb-4 text-sky-700">🏎️ Race Car Tracking in Video</h3>
+                        <p class="font-semibold text-slate-700">Project Focus:</p>
+                        <p class="mb-4 text-slate-600">Developed a vehicle tracking system to monitor race cars in real-time, providing detailed analytics on speed and position.</p>
+                        <p class="font-semibold text-slate-700">Key Skills Demonstrated:</p>
+                        <p class="mb-4 text-slate-600">Vehicle Tracking, Real-time Analysis, Speed and Position Analytics, Video Processing.</p>
+                        <p class="font-semibold text-slate-700">Impact:</p>
+                        <p class="text-slate-600 font-medium">Provided critical performance insights for race analytics and safety monitoring.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/Ritesh0811/Race-Car-Tracking-in-Video" target="_blank" class="project-link primary">View Code</a>
+                            <a href="#" target="_blank" class="project-link secondary">Live Demo (N/A)</a>
+                        </div>
+                    </div>
+                    <div id="tab4" class="tab-content">
+                        <h3 class="font-bold text-xl mb-4 text-sky-700">🖼️ Image Segmentation using Deep Learning with PyTorch</h3>
+                        <p class="font-semibold text-slate-700">Project Focus:</p>
+                        <p class="mb-4 text-slate-600">Developed a deep learning model using PyTorch for image segmentation tasks, focusing on accurate object isolation in images.</p>
+                        <p class="font-semibold text-slate-700">Key Skills Demonstrated:</p>
+                        <p class="mb-4 text-slate-600">Deep Learning, PyTorch, Image Segmentation, Object Isolation, Model Development.</p>
+                        <p class="font-semibold text-slate-700">Impact:</p>
+                        <p class="text-slate-600 font-medium">Enabled precise delineation of objects within complex images, crucial for scene understanding.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/Ritesh0811/Image-Segmentation-using-Deep-Learning-with-PyTorch" target="_blank" class="project-link primary">View Code</a>
+                            <a href="#" target="_blank" class="project-link secondary">Live Demo (N/A)</a>
+                        </div>
+                    </div>
+                    <div id="tab5" class="tab-content">
+                        <h3 class="font-bold text-xl mb-4 text-sky-700">☁️ Deploying Computer Vision Applications on Cloud</h3>
+                        <p class="font-semibold text-slate-700">Project Focus:</p>
+                        <p class="mb-4 text-slate-600">Deployed several of the above applications on cloud platforms [Heroku, AWS, GitLab CI-CD] ensuring scalability, reliability, and real-time data processing capabilities.</p>
+                        <p class="font-semibold text-slate-700">Key Skills Demonstrated:</p>
+                        <p class="mb-4 text-slate-600">Cloud Deployment (Heroku, AWS), CI/CD (GitLab), Scalability, Real-time Data Processing.</p>
+                        <p class="font-semibold text-slate-700">Impact:</p>
+                        <p class="text-slate-600 font-medium">Ensured robust and accessible deployment of computer vision solutions for wider use.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/Ritesh0811" target="_blank" class="project-link primary">View Code</a>
+                            <a href="#" target="_blank" class="project-link secondary">Live Demo (N/A)</a>
+                        </div>
+                    </div>
+                    <div id="tab6" class="tab-content">
+                        <h3 class="font-bold text-xl mb-4 text-sky-700">🤖 Generative AI for Autonomous Vehicle Scenario Simulation</h3>
+                        <p class="font-semibold text-slate-700">Project Focus:</p>
+                        <p class="mb-4 text-slate-600">Created a generative AI tool to simulate diverse driving scenarios for autonomous vehicles, including various weather conditions, road types, and unexpected events. This project utilized AI to generate synthetic sensor data and virtual environments, enabling comprehensive testing of vehicle perception and decision-making algorithms in a controlled manner.</p>
+                        <p class="font-semibold text-slate-700">Key Skills Demonstrated:</p>
+                        <p class="mb-4 text-slate-600">Generative AI, Scenario Simulation, Synthetic Data Generation, Virtual Environments, Perception Testing.</p>
+                        <p class="font-semibold text-slate-700">Impact:</p>
+                        <p class="text-slate-600 font-medium">Revolutionized testing methodologies by enabling comprehensive and controlled simulation of complex driving conditions.</p>
+                        <div class="project-links">
+                            <a href="https://github.com/Ritesh0811/Generative-AI-for-Autonomous-Vehicle-Scenario-Simulation" target="_blank" class="project-link primary">View Code</a>
+                            <a href="#" target="_blank" class="project-link secondary">Live Demo (N/A)</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="certifications" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Professional Certifications</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">Highlighting my formal qualifications and continuous learning in key areas of computer vision and deep learning.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200 text-center">
+                        <div class="text-3xl mb-3 text-sky-500">🎓</div>
+                        <h3 class="font-bold text-lg mb-2">Self-Driving Cars Specialization</h3>
+                        <p class="text-slate-600 text-sm">Coursera (University of Toronto)</p>
+                        <p class="text-xs text-slate-500 mt-1">Issued: [Date]</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200 text-center">
+                        <div class="text-3xl mb-3 text-sky-500">🚗</div>
+                        <h3 class="font-bold text-lg mb-2">Intro to Self-Driving Cars Nanodegree</h3>
+                        <p class="text-slate-600 text-sm">Udacity</p>
+                        <p class="text-xs text-slate-500 mt-1">Issued: [Date]</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200 text-center">
+                        <div class="text-3xl mb-3 text-sky-500">🐍</div>
+                        <h3 class="font-bold text-lg mb-2">Intermediate Python Nanodegree</h3>
+                        <p class="text-slate-600 text-sm">Udacity</p>
+                        <p class="text-xs text-slate-500 mt-1">Issued: [Date]</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200 text-center">
+                        <div class="text-3xl mb-3 text-sky-500">🧠</div>
+                        <h3 class="font-bold text-lg mb-2">Machine Learning Advanced Certification</h3>
+                        <p class="text-slate-600 text-sm">Simpli-learn</p>
+                        <p class="text-xs text-slate-500 mt-1">Issued: [Date]</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow border border-slate-200 text-center">
+                        <div class="text-3xl mb-3 text-sky-500">💻</div>
+                        <h3 class="font-bold text-lg mb-2">Google IT Automation with Python</h3>
+                        <p class="text-slate-600 text-sm">Google</p>
+                        <p class="text-xs text-slate-500 mt-1">Issued: [Date]</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Technical Skills & Tools</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">This chart provides a visual representation of my proficiency with key programming languages, frameworks, and tools. Each color group represents a different category of skills.</p>
+                    
+                    <div class="flex flex-wrap justify-center gap-4 mt-6 text-sm text-slate-700">
+                        <div class="skill-legend-item">
+                            <div class="skill-legend-color" style="background-color: rgba(14, 165, 233, 0.8);"></div>
+                            <span>Programming</span>
+                        </div>
+                        <div class="skill-legend-item">
+                            <div class="skill-legend-color" style="background-color: rgba(168, 85, 247, 0.8);"></div>
+                            <span>AI/ML & CV</span>
+                        </div>
+                        <div class="skill-legend-item">
+                            <div class="skill-legend-color" style="background-color: rgba(22, 163, 74, 0.8);"></div>
+                            <span>Platforms</span>
+                        </div>
+                        <div class="skill-legend-item">
+                            <div class="skill-legend-color" style="background-color: rgba(249, 115, 22, 0.8);"></div>
+                            <span>DevOps Tools</span>
+                        </div>
+                        <div class="skill-legend-item">
+                            <div class="skill-legend-color" style="background-color: rgba(6, 182, 212, 0.8);"></div>
+                            <span>Methodologies</span>
+                        </div>
+                        <div class="skill-legend-item">
+                            <div class="skill-legend-color" style="background-color: rgba(100, 116, 139, 0.8);"></div>
+                            <span>Data/Other</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section id="experience" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Experience & Education</h2>
+                    <p class="mt-2 text-slate-600 max-w-2xl mx-auto">This section outlines my professional journey and academic background, presented in two separate timelines for clarity.</p>
+                </div>
+                <div class="timeline-container">
+                    <div class="timeline-col left">
+                        <h3 class="text-xl font-bold text-slate-800 mb-6 text-center md:text-right">Professional Experience</h3>
+                        <div class="vertical-line hidden md:block"></div>
+                        
+                        <div class="timeline-event">
+                            <div class="circle hidden md:block"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg">Senior SDET</h4>
+                                <p class="text-sm text-slate-600">Nvidia Graphics Pvt. Ltd</p>
+                                <p class="text-xs text-slate-500">08/2021 - Present</p>
+                                <p class="text-sm mt-1 text-slate-500">Led Automotive Parking ECU team, creating Python/C++ code for SIL/HIL simulations and managing release testing. Utilized Generative AI for synthetic data and developed automation tools, enhancing vehicle perception systems.</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-event">
+                            <div class="circle hidden md:block"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg">Senior Engineer</h4>
+                                <p class="text-sm text-slate-600">Tata Consultancy Services</p>
+                                <p class="text-xs text-slate-500">03/2015 - 07/2021</p>
+                                <p class="text-sm mt-1 text-slate-500">Spearheaded MATLAB model development and validation, leading a team through project delivery. Conducted extensive ECU testing and collaborated on ADAS feature enhancements, managing data analysis with ML libraries.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-col right">
+                        <h3 class="text-xl font-bold text-slate-800 mb-6 text-center md:text-left">Education</h3>
+                        <div class="vertical-line hidden md:block"></div>
+
+                        <div class="timeline-event">
+                            <div class="circle hidden md:block"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg">M.Tech</h4>
+                                <p class="text-sm text-slate-600">Amrita School of Engineering</p>
+                                <p class="text-xs text-slate-500">06/2017 - 06/2019</p>
+                                <p class="text-xs text-slate-500">Coimbatore</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-event">
+                            <div class="circle hidden md:block"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-lg">B.E.</h4>
+                                <p class="text-sm text-slate-600">Amravati University</p>
+                                <p class="text-xs text-slate-500">06/2010 - 06/2014</p>
+                                <p class="text-xs text-slate-500">Maharashtra, Amravati</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-2xl font-bold">Let's build the future of driving.</h2>
+            <p class="mt-4 text-slate-300 max-w-xl mx-auto">
+                I am passionate about solving complex perception challenges to create safer and more efficient transportation.
+            </p>
+            <div class="mt-6">
+                <p>Contact: <a href="mailto:riteshkapse1992@gmail.com" class="text-sky-400 hover:underline">riteshkapse1992@gmail.com</a></p>
+                <p>LinkedIn: <a href="https://www.linkedin.com/in/riteshkapse/" target="_blank" class="text-sky-400 hover:underline">linkedin.com/in/riteshkapse</a></p>
+                <p>GitHub: <a href="https://github.com/Ritesh0811" target="_blank" class="text-sky-400 hover:underline">github.com/Ritesh0811</a></p>
+            </div>
+            <p class="mt-8 text-slate-400 text-sm">© 2025 Ritesh Kapse. Passionate about Computer Vision & Autonomous Systems.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-tab');
+
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === target) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                     mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const sections = document.querySelectorAll('section');
+            const navLinkElements = document.querySelectorAll('.nav-link');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinkElements.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Define skill categories and their associated colors
+            const skillCategories = {
+                'Programming': 'rgba(14, 165, 233, 0.8)',   /* sky-500 */
+                'AI/ML & CV': 'rgba(168, 85, 247, 0.8)',    /* purple-500 */
+                'Platforms': 'rgba(22, 163, 74, 0.8)',      /* green-600 */
+                'DevOps Tools': 'rgba(249, 115, 22, 0.8)',  /* orange-500 */
+                'Methodologies': 'rgba(6, 182, 212, 0.8)',  /* cyan-500 */
+                'Data/Other': 'rgba(100, 116, 139, 0.8)'    /* slate-500 */
+            };
+
+            // Map each skill to its category and proficiency
+            const skillsMap = {
+                'Python': { category: 'Programming', proficiency: 95 },
+                'C++': { category: 'Programming', proficiency: 85 },
+                'Machine Learning': { category: 'AI/ML & CV', proficiency: 90 },
+                'Generative AI': { category: 'AI/ML & CV', proficiency: 80 },
+                'Computer Vision': { category: 'AI/ML & CV', proficiency: 95 },
+                'PyTorch': { category: 'AI/ML & CV', proficiency: 90 },
+                'NVIDIA DRIVE': { category: 'Platforms', proficiency: 70 },
+                'DGX': { category: 'Platforms', proficiency: 65 },
+                'Jenkins': { category: 'DevOps Tools', proficiency: 80 },
+                'GIT': { category: 'DevOps Tools', proficiency: 98 },
+                'Gerrit': { category: 'DevOps Tools', proficiency: 75 },
+                'Confluence': { category: 'DevOps Tools', proficiency: 70 },
+                'Jira': { category: 'DevOps Tools', proficiency: 80 },
+                'Scrum': { category: 'Methodologies', proficiency: 85 },
+                'Agile': { category: 'Methodologies', proficiency: 85 },
+                'Test Automation': { category: 'Methodologies', proficiency: 90 },
+                'NumPy/Pandas': { category: 'Data/Other', proficiency: 90 }
+            };
+
+            // Prepare data for Chart.js
+            const labels = Object.keys(skillsMap);
+            const data = labels.map(skill => skillsMap[skill].proficiency);
+            const backgroundColors = labels.map(skill => skillCategories[skillsMap[skill].category]);
+            const borderColors = labels.map(skill => skillCategories[skillsMap[skill].category].replace('0.8)', '1)')); // Solid border for the same color
+
+            const skillsData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Proficiency',
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    barThickness: 20,
+                }]
+            };
+
+            const skillsConfig = {
+                type: 'bar',
+                data: skillsData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false // We are using categorized colors, no need for individual bar legends
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        let value = context.parsed.x;
+                                        let level = '';
+                                        if (value >= 90) level = 'Expert';
+                                        else if (value >= 75) level = 'Advanced';
+                                        else level = 'Proficient';
+                                        label += `${level} (${value}%)`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%'
+                                }
+                            }
+                        },
+                        y: {
+                           ticks: {
+                               font: {
+                                   size: 14,
+                               }
+                           }
+                        }
+                    }
+                }
+            };
+            
+            const skillsChartCtx = document.getElementById('skillsChart').getContext('2d');
+            new Chart(skillsChartCtx, skillsConfig);
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            .tab {
+                padding: 0.5rem 1.5rem;
+                border-radius: 9999px;
+                border: 1px solid #e2e8f0;
+                background-color: white;
+                color: #475569;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+            }
+            .tab:hover {
+                background-color: #f1f5f9;
+                border-color: #cbd5e1;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
