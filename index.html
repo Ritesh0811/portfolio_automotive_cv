@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Cool Neutrals -->
-    <!-- Application Structure Plan: The SPA is structured as a single-page, scrollable portfolio with a sticky top navigation bar for easy access to key sections. This design was chosen for its modern, linear storytelling flow, which is ideal for a resume or portfolio. The structure includes: 1) A Hero section for immediate impact, featuring a personal photo on the left and updated title/summary on the right. 2) A "Core Competencies" section visualized as a grid of cards for scannability. 3) An interactive tabbed "Key Projects" section with direct links to code and demos, populated with resume data. 4) A "Technical Skills" section featuring a Chart.js bar chart with updated skills and categorized coloring, now including a clear legend. 5) A "Professional Certifications" section highlighting formal qualifications from resume. 6) A "Experience & Education" section now presenting two distinct, side-by-side timelines with summarized experience descriptions for clarity and improved visual spacing. This structure transforms a static document into an engaging user-driven experience. -->
-    <!-- Visualization & Content Choices: 1) Core Competencies (Report Info) -> Inform (Goal) -> Grid of cards with icons (Presentation) -> Hover to highlight (Interaction) -> More scannable and visually appealing than a list (Justification) -> HTML/Tailwind (Method). 2) Key Projects (Report Info) -> Organize (Goal) -> Tabbed interface with emojis and action links (Presentation) -> Click to reveal details, click links for code/demo (Interaction) -> Improves readability, user control, and provides direct access to project artifacts (Justification) -> JS/HTML/Tailwind (Method). 3) Technical Skills (Report Info) -> Compare (Goal) -> Horizontal Bar Chart with categorized colors and rounded bars (Presentation) -> Hover for tooltips, integrated legend (Interaction) -> Visually quantifies skills, makes categories clear, and offers a trendy look (Justification) -> Chart.js/Canvas (Method). 4) Professional Certifications (New Info) -> Inform (Goal) -> Grid of cards with icons (Presentation) -> Clear display of qualifications (Justification) -> HTML/Tailwind (Method). 5) Experience & Education (Report Info) -> Change/Organize (Goal) -> Two side-by-side vertical timelines with concise summaries and optimized spacing (Presentation) -> Clear chronological display and improved readability (Justification) -> HTML/Tailwind (Method). -->
+    <!-- Application Structure Plan: The SPA is structured as a single-page, scrollable portfolio with a sticky top navigation bar for easy access to key sections. This design was chosen for its modern, linear storytelling flow, which is ideal for a resume or portfolio. The structure includes: 1) A Hero section for immediate impact, featuring a personal photo on the left and updated title/summary on the right. 2) A "Core Competencies" section visualized as a grid of cards for scannability. 3) An interactive tabbed "Key Projects" section with direct links to code and demos, populated with resume data. 4) A "Technical Skills" section featuring a Chart.js bar chart with updated skills and categorized coloring, now including a clear legend and emojis for skill labels. 5) A "Professional Certifications" section highlighting formal qualifications from resume. 6) A "Experience & Education" section now presenting two distinct, side-by-side timelines with summarized experience descriptions for clarity and improved visual spacing. This structure transforms a static document into an engaging user-driven experience. -->
+    <!-- Visualization & Content Choices: 1) Core Competencies (Report Info) -> Inform (Goal) -> Grid of cards with icons (Presentation) -> Hover to highlight (Interaction) -> More scannable and visually appealing than a list (Justification) -> HTML/Tailwind (Method). 2) Key Projects (Report Info) -> Organize (Goal) -> Tabbed interface with emojis and action links (Presentation) -> Click to reveal details, click links for code/demo (Interaction) -> Improves readability, user control, and provides direct access to project artifacts (Justification) -> JS/HTML/Tailwind (Method). 3) Technical Skills (Report Info) -> Compare (Goal) -> Horizontal Bar Chart with categorized colors, rounded bars, emojis, and integrated legend (Presentation) -> Hover for tooltips (Interaction) -> Visually quantifies skills, makes categories clear, and offers a trendy look (Justification) -> Chart.js/Canvas (Method). 4) Professional Certifications (New Info) -> Inform (Goal) -> Grid of cards with icons (Presentation) -> Clear display of qualifications (Justification) -> HTML/Tailwind (Method). 5) Experience & Education (Report Info) -> Change/Organize (Goal) -> Two side-by-side vertical timelines with concise summaries and optimized spacing (Presentation) -> Clear chronological display and improved readability (Justification) -> HTML/Tailwind (Method). -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -566,23 +566,23 @@
 
             // Map each skill to its category and proficiency
             const skillsMap = {
-                'Python': { category: 'Programming', proficiency: 95 },
-                'C++': { category: 'Programming', proficiency: 85 },
-                'Machine Learning': { category: 'AI/ML & CV', proficiency: 90 },
-                'Generative AI': { category: 'AI/ML & CV', proficiency: 80 },
-                'Computer Vision': { category: 'AI/ML & CV', proficiency: 95 },
-                'PyTorch': { category: 'AI/ML & CV', proficiency: 90 },
-                'NVIDIA DRIVE': { category: 'Platforms', proficiency: 70 },
-                'DGX': { category: 'Platforms', proficiency: 65 },
-                'Jenkins': { category: 'DevOps Tools', proficiency: 80 },
-                'GIT': { category: 'DevOps Tools', proficiency: 98 },
-                'Gerrit': { category: 'DevOps Tools', proficiency: 75 },
-                'Confluence': { category: 'DevOps Tools', proficiency: 70 },
-                'Jira': { category: 'DevOps Tools', proficiency: 80 },
-                'Scrum': { category: 'Methodologies', proficiency: 85 },
-                'Agile': { category: 'Methodologies', proficiency: 85 },
-                'Test Automation': { category: 'Methodologies', proficiency: 90 },
-                'NumPy/Pandas': { category: 'Data/Other', proficiency: 90 }
+                '🐍 Python': { category: 'Programming', proficiency: 95 },
+                '➕ C++': { category: 'Programming', proficiency: 85 },
+                '🧠 Machine Learning': { category: 'AI/ML & CV', proficiency: 90 },
+                '🤖 Generative AI': { category: 'AI/ML & CV', proficiency: 80 },
+                '👁️ Computer Vision': { category: 'AI/ML & CV', proficiency: 95 },
+                '🔥 PyTorch': { category: 'AI/ML & CV', proficiency: 90 },
+                '💻 NVIDIA DRIVE': { category: 'Platforms', proficiency: 70 },
+                '🚀 DGX': { category: 'Platforms', proficiency: 65 },
+                '⚙️ Jenkins': { category: 'DevOps Tools', proficiency: 80 },
+                '🌳 GIT': { category: 'DevOps Tools', proficiency: 98 },
+                '🤝 Gerrit': { category: 'DevOps Tools', proficiency: 75 },
+                '📝 Confluence': { category: 'DevOps Tools', proficiency: 70 },
+                '📋 Jira': { category: 'DevOps Tools', proficiency: 80 },
+                '🏃 Scrum': { category: 'Methodologies', proficiency: 85 },
+                '🔄 Agile': { category: 'Methodologies', proficiency: 85 },
+                '🧪 Test Automation': { category: 'Methodologies', proficiency: 90 },
+                '📊 NumPy/Pandas': { category: 'Data/Other', proficiency: 90 }
             };
 
             // Prepare data for Chart.js
